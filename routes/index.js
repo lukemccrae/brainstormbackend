@@ -19,6 +19,7 @@ router.post('/entry/:id', function(req, res, next) {
         storm_id: req.body.storm_id,
         content: req.body.content
     }
+    console.log(entry);
     knex('entry')
         .insert(entry, 'id')
         .then(ids => {
