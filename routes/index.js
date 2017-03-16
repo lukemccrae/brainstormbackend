@@ -7,11 +7,13 @@ router.post('/', function(req, res, next) {
         name: req.body.name,
         date: new Date()
     }
+    if(req.body.name) {
     knex('storm')
         .insert(storm, 'id')
         .then(ids => {
             res.json(ids[0])
         })
+      }
 });
 
 router.post('/entry/:id', function(req, res, next) {
@@ -19,12 +21,16 @@ router.post('/entry/:id', function(req, res, next) {
         storm_id: req.body.storm_id,
         content: req.body.content
     }
-    console.log(entry);
-    knex('entry')
-        .insert(entry, 'id')
-        .then(ids => {
-            res.json(ids[0])
-        })
+    if (req.body.content) {
+        console.log('posting', entry);
+        knex('entry')
+            .insert(entry, 'id')
+            .then(ids => {
+                res.json(ids[0])
+            })
+    } else {
+        console.log('empty content')
+    }
 });
 
 router.get('/entry/:id', (req, res) => {

@@ -3,6 +3,7 @@ exports.up = function(knex, Promise) {
         table.increments();
         table.text('name').notNullable();
         table.datetime('date').notNullable();
+        table.integer('view_id').defaultTo(0);
     });
 };
 
