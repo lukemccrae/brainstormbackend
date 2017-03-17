@@ -7,13 +7,13 @@ router.post('/', function(req, res, next) {
         name: req.body.name,
         date: new Date()
     }
-    if(req.body.name) {
-    knex('storm')
-        .insert(storm, 'id')
-        .then(ids => {
-            res.json(ids[0])
-        })
-      }
+    if (req.body.name) {
+        knex('storm')
+            .insert(storm, 'id')
+            .then(ids => {
+                res.json(ids[0])
+            })
+    }
 });
 
 router.post('/entry/:id', function(req, res, next) {
@@ -33,12 +33,37 @@ router.post('/entry/:id', function(req, res, next) {
     }
 });
 
+router.post('/voteChat/:id', function(req, res, next) {
+    console.log(req.body);
+    var chat = {
+        storm_id: req.body.storm_id,
+        content: req.body.content,
+        date: new Date()
+    }
+    console.log('posting', chat);
+    knex('chat')
+        .insert(chat, 'id')
+        .then(ids => {
+            res.json(ids[0])
+        })
+});
+
 router.get('/entry/:id', (req, res) => {
     knex('entry')
         .where('storm_id', req.params.id)
         .then(entry => {
             res.json({
                 data: entry
+            });
+        });
+});
+
+router.get('/chat/:id', (req, res) => {
+    knex('chat')
+        .where('storm_id', req.params.id)
+        .then(chat => {
+            res.json({
+                data: chat
             });
         });
 });
@@ -60,7 +85,44 @@ router.delete('/:id', (req, res) => {
         .where('id', id)
         .del()
         .then(() => {
-            console.log("post " + id + " deleted");
+            console.log("storm " + id + " deleted");
+        });
+});
+
+router.delete('/entry/:id', (req, res) => {
+    const id = req.params.id;
+    knex('entry')
+        .where('id', id)
+        .del()
+        .then(() => {
+            console.log("entry " + id + " deleted");
+        });
+});
+
+router.put('/entry/upvote/:id', (req, res) => {
+    const id = req.params.id;
+    const update = {
+        votes: req.body.votes
+    }
+    knex('entry')
+        .where('id', id)
+        .update(update, 'id')
+        .then(() => {
+            console.log('entry ' + id + 'upvoted');
+        })
+})
+
+router.put('/entry/:id', (req, res) => {
+    const id = req.params.id;
+    const entry = {
+        content: req.body.content
+    }
+    console.log(entry);
+    knex('entry')
+        .where('id', id)
+        .update(entry, 'id')
+        .then(() => {
+            console.log('entry ' + id + ' updated');
         });
 });
 
